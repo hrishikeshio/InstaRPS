@@ -1,0 +1,68 @@
+<html>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+  crossorigin="anonymous"></script>
+  <script src="js/web3.min.js"></script>
+  <script src="js/insta.js"></script>
+</head>
+<body>
+<h1><img style="height:40px; widtch:40px;" src="http://cultofthepartyparrot.com/parrots/hd/parrot.gif" /> Welcome to InstaRPS 
+<img style="height:40px; widtch:40px;" src="http://cultofthepartyparrot.com/parrots/hd/rightparrot.gif" /></h1>
+
+<h2> Start game </h2>
+Total Stake:<input name="stake" />
+Opponent Address:<input name="opponent" />
+Stake per game: <input name="stakePerGame" /> <br/>
+<button name="startGame" value='startGame'>Start Game</button>
+<br/>
+Result: Contract address: <br/>
+
+<h3> Enter contract address for all functions below<h3>
+Contract Address: <input name="contractAddress" /> <br/>
+<h2> Match stake </h2>
+  
+Stake: <input name="stake" /> <br/>
+<button type='submit' value='submit'>submit</button> <br/>
+Result:
+
+<h2> Play hand </h2>
+Hand: (rock, paper or scissor) <input type="text" name="hand"> <br/>
+Nonce: <input type="number" name="nonce"> <br/>
+Stake: 0.1eth <br/>
+Player1balance:<input type="number" name="player1Balance"> <br/>
+Player2balance:<input type="number" name="player2Balance"> <br/>
+<button type='submit' value='submit'>submit</button> <br/>
+Result:
+
+<h2> who won? </h2>
+Player1 hash:<input type="text" name="player1Hash"><br/>
+Player1 secret:<input type="text" name="player1secret"><br/>
+Player2 hash:<input type="text" name="player2Hash"><br/>
+Player2 secret:<input type="text" name="player2secret"><br/>
+<br/>
+<button>Compute</button>
+
+<br/>Result:
+<br/>Winner:
+<br/>nonce:
+<br/>Player1 hand:
+<br/>Player2 hand:
+<br/>player1 balance: 
+<br/>player2 balance: 
+<br/> 
+
+<h2> Cashout</h2>
+End the game and cashout.
+Player1 hash:<input type="text" name="player1Hash"><br/>
+Player1 secret:<input type="text" name="player1secret"><br/>
+Player2 hash:<input type="text" name="player2Hash"><br/>
+Player2 secret:<input type="text" name="player2secret"><br/>
+
+<button>How bout dah?</button>
+<br/> Result:
+
+</body>
+</html>
+
