@@ -26,23 +26,26 @@
 //hand = "scissors" : 
 //0x35ccbb689808295e5c51510ed28a96a729e963a12d09c4a7a4ba000c9777e897
 
-
+import "./strings.sol";
 
 pragma solidity ^0.4.4;
 contract Crypto_RPS
 {
+  using strings for *; 
 
   address owner;
   address opponent;
   uint256 stake;
   bool matched = false;
   uint256 expirationBlockTime;
-  uint8 nonce1;
-  uint8 nonce2;
-  uint256 player1balance1;
-  uint256 player1balance2;
-  uint256 player2balance1;
-  uint256 player2balance2;
+  uint256 nonce_1;
+  uint256 nonce_2;
+  string hand_1;
+  string hand_2;
+  uint256 player1balance_1;
+  uint256 player1balance_2;
+  uint256 player2balance_1;
+  uint256 player2balance_2;
   
   modifier onlyOwner() {
     if (msg.sender!=owner) throw;
@@ -108,12 +111,13 @@ contract Crypto_RPS
     if (matched) throw;
     matched = true;
   }
+  event LogClose(uint256, string, uint256, uint256);
 
   function close(bytes32 owner_hand,
                 string owner_secret,
                 bytes32 opponent_hand,
                 string opponent_secret,
-                bytes memory message1,
+                string memory message1,
                 bytes memory message2
                 )
   {
@@ -122,22 +126,23 @@ contract Crypto_RPS
     // [41:49] player1balance
     // [49:57] player2balance
 
-    assembly {
-            nonce1 := mload(add(message1, 8))
-            hand1 :=  mload(add(message1, 40))
-            player1balance1 :=  mload(add(message1, 49))
-            player2balance1 :=  mload(add(message1, 57))
-            nonce2 := mload(add(message2, 8))
-            hand2 :=  mload(add(message2, 40))
-            player1balance2 :=  mload(add(message2, 49))
-            player2balance2 :=  mload(add(message2, 57))
-          }
-  if (nonce1!=nonce2) throw;
-  if (player2balance1!=player2balance2) throw;
-  if (player1balance1!=player1balance2) throw;
 
-  opponent.send(player2balance1);
-  owner.send(this.balance);
+        var s = message1.toSlice();
+        var delim = "|".toSlice();
+        var parts = new string[](s.count(delim));
+        
+        nonce_1 = stringToUint(s.split(delim).toString());
+        hand_1 = s.split(delim).toString();
+        player1balance_1 = stringToUint(s.split(delim).toString());
+        player2balance_1 = stringToUint(s.split(delim).toString());
+        LogClose(nonce_1,hand_1,player2balance_1,player2balance_2);
+
+  // if (nonce1!=nonce2) throw;
+  // if (player2balance1!=player2balance2) throw;
+  // if (player1balance1!=player1balance2) throw;
+
+  // opponent.send(player2balance1);
+  // owner.send(this.balance);
 
   }
   //  event Log(string text, bool called, uint value);
@@ -146,7 +151,6 @@ contract Crypto_RPS
   //  event matchedPublicGame(bytes32 gameHash, address player_1, address player_2,  uint gambleValue, uint gameIndex);
   event solvedPublicGame(address player_1, string hand_1, address player_2, string hand_2, uint gambleValue, Results result, uint gameIndex);    
   function createPublicGame(bytes32 cryptedH)//, uint blockNumber)
-  payable
   {
     //hand already used
     if (publicGameHashToIndex[cryptedH]!=0)
@@ -297,6 +301,10 @@ contract Crypto_RPS
       }
   }
 
+ function getBlanace() public constant returns (uint256)
+ {
+     return this.balance;
+ }
   function signatureSplit(bytes signature) private returns (bytes32 r, bytes32 s, uint8 v) {
       // The signature format is a compact form of:
       //   {bytes32 r}{bytes32 s}{uint8 v}
@@ -349,6 +357,17 @@ contract Crypto_RPS
               n[i - start] = a[i];
           }
       }
+       function stringToUint(string s) constant returns (uint result) {
+        bytes memory b = bytes(s);
+        uint i;
+        result = 0;
+        for (i = 0; i < b.length; i++) {
+            uint c = uint(b[i]);
+            if (c >= 48 && c <= 57) {
+                result = result * 10 + (c - 48);
+            }
+        }
+    }
 
 }
 
