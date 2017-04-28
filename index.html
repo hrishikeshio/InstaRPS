@@ -5,7 +5,7 @@
   integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
   crossorigin="anonymous"></script>
   <script src="js/web3.min.js"></script>
-  <script src="js/insta.js"></script>
+  <!-- <script src="js/insta.js"></script> -->
   <script src="js/index.js"></script>
 </head>
 <body>
@@ -24,19 +24,20 @@ Result: Contract address: <br/>
 Contract Address: <input id="contractAddress" /> <br/>
 <h2> Match stake </h2>
   
-Stake: <input id "stake_val" name="stake" /> <br/>
+Stake: <input id="stake_val" name="stake" /> <br/>
 <button id="btn_stake" value='submit'>submit</button> <br/>
 Result:
 
 <h2> Play hand </h2>
 Hand: (rock, paper or scissor) <input type="text" id="play_hand" name="hand"> <br/>
+Secret: (dont forget!) <input type="text" id="play_secret" name="hand"> <br/>
 Nonce: <input type="number" id="play_nonce" name="nonce"> <br/>
 Stake: 0.1eth <br/>
 Player1balance:<input type="number" id="play_p1b" name="player1Balance"> <br/>
-Player2balance:<input type="number" id="play_p1b" name="player2Balance"> <br/>
+Player2balance:<input type="number" id="play_p2b" name="player2Balance"> <br/>
 <button type='submit' id="btn_play" value='submit'>submit</button> <br/>
 Result:
-
+<div id='#play_result'></div>
 <h2> Who won? you decide! </h2>
 Player1 hash:<input type="text" id="compute_p1h" name="player1Hash"><br/>
 Player1 secret:<input type="text" id="compute_p1s"  name="player1secret"><br/>

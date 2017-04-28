@@ -113,36 +113,37 @@ contract Crypto_RPS
   }
   event LogClose(uint256, string, uint256, uint256);
 
-  function close(bytes32 owner_hand,
+  function close(string owner_hand,
                 string owner_secret,
-                bytes32 opponent_hand,
+                string opponent_hand,
                 string opponent_secret,
                 string memory message1,
-                bytes memory message2
+                string memory message2
                 )
   {
-    // [0:8] nonce
-    // [8:40] hand
-    // [41:49] player1balance
-    // [49:57] player2balance
 
 
         var s = message1.toSlice();
         var delim = "|".toSlice();
-        var parts = new string[](s.count(delim));
         
         nonce_1 = stringToUint(s.split(delim).toString());
         hand_1 = s.split(delim).toString();
         player1balance_1 = stringToUint(s.split(delim).toString());
         player2balance_1 = stringToUint(s.split(delim).toString());
-        LogClose(nonce_1,hand_1,player2balance_1,player2balance_2);
+        
+        var s2 = message2.toSlice();
+        
+        nonce_2 = stringToUint(s2.split(delim).toString());
+        hand_2 = s2.split(delim).toString();
+        player1balance_2 = stringToUint(s2.split(delim).toString());
+        player2balance_2 = stringToUint(s2.split(delim).toString());
+  
+  if (nonce_1!=nonce_2) throw;
+  if (player2balance_1!=player2balance_2) throw;
+  if (player1balance_1!=player1balance_2) throw;
 
-  // if (nonce1!=nonce2) throw;
-  // if (player2balance1!=player2balance2) throw;
-  // if (player1balance1!=player1balance2) throw;
-
-  // opponent.send(player2balance1);
-  // owner.send(this.balance);
+  if(!opponent.send(player2balance_1)) throw;
+  if(!owner.send(this.balance)) throw;
 
   }
   //  event Log(string text, bool called, uint value);
