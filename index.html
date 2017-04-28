@@ -6,43 +6,44 @@
   crossorigin="anonymous"></script>
   <script src="js/web3.min.js"></script>
   <script src="js/insta.js"></script>
+  <script src="js/index.js"></script>
 </head>
 <body>
 <h1><img style="height:40px; widtch:40px;" src="http://cultofthepartyparrot.com/parrots/hd/parrot.gif" /> Welcome to InstaRPS 
 <img style="height:40px; widtch:40px;" src="http://cultofthepartyparrot.com/parrots/hd/rightparrot.gif" /></h1>
 
 <h2> Start game </h2>
-Total Stake:<input name="stake" />
-Opponent Address:<input name="opponent" />
-Stake per game: <input name="stakePerGame" /> <br/>
-<button name="startGame" value='startGame'>Start Game</button>
+Total Stake:<input name="stake" id="start_stake" /> <br/>
+Opponent Address:<input name="opponent" id="start_opponent" /><br/>
+Stake per game: fixed at 0.01E<!-- <input name="stakePerGame" /> 0.1 --><br/>
+<button name="startGame" value="startGame" id="btn_start">Start Game</button>
 <br/>
 Result: Contract address: <br/>
 
 <h3> Enter contract address for all functions below<h3>
-Contract Address: <input name="contractAddress" /> <br/>
+Contract Address: <input id="contractAddress" /> <br/>
 <h2> Match stake </h2>
   
-Stake: <input name="stake" /> <br/>
-<button type='submit' value='submit'>submit</button> <br/>
+Stake: <input id "stake_val" name="stake" /> <br/>
+<button id="btn_stake" value='submit'>submit</button> <br/>
 Result:
 
 <h2> Play hand </h2>
-Hand: (rock, paper or scissor) <input type="text" name="hand"> <br/>
-Nonce: <input type="number" name="nonce"> <br/>
+Hand: (rock, paper or scissor) <input type="text" id="play_hand" name="hand"> <br/>
+Nonce: <input type="number" id="play_nonce" name="nonce"> <br/>
 Stake: 0.1eth <br/>
-Player1balance:<input type="number" name="player1Balance"> <br/>
-Player2balance:<input type="number" name="player2Balance"> <br/>
-<button type='submit' value='submit'>submit</button> <br/>
+Player1balance:<input type="number" id="play_p1b" name="player1Balance"> <br/>
+Player2balance:<input type="number" id="play_p1b" name="player2Balance"> <br/>
+<button type='submit' id="btn_play" value='submit'>submit</button> <br/>
 Result:
 
-<h2> who won? </h2>
-Player1 hash:<input type="text" name="player1Hash"><br/>
-Player1 secret:<input type="text" name="player1secret"><br/>
-Player2 hash:<input type="text" name="player2Hash"><br/>
-Player2 secret:<input type="text" name="player2secret"><br/>
+<h2> Who won? you decide! </h2>
+Player1 hash:<input type="text" id="compute_p1h" name="player1Hash"><br/>
+Player1 secret:<input type="text" id="compute_p1s"  name="player1secret"><br/>
+Player2 hash:<input type="text"  id="compute_p2h" name="player2Hash"><br/>
+Player2 secret:<input type="text"  id="compute_p2s" name="player2secret"><br/>
 <br/>
-<button>Compute</button>
+<button id ="btn_winner">Compute</button>
 
 <br/>Result:
 <br/>Winner:
@@ -55,10 +56,10 @@ Player2 secret:<input type="text" name="player2secret"><br/>
 
 <h2> Cashout</h2>
 End the game and cashout.
-Player1 hash:<input type="text" name="player1Hash"><br/>
-Player1 secret:<input type="text" name="player1secret"><br/>
-Player2 hash:<input type="text" name="player2Hash"><br/>
-Player2 secret:<input type="text" name="player2secret"><br/>
+Player1 hash:<input type="text"  id="cashout_p1h" name="player1Hash"><br/>
+Player1 secret:<input type="text" id="cashout_p1s" name="player1secret"><br/>
+Player2 hash:<input type="text" id="cashout_p2h" name="player2Hash"><br/>
+Player2 secret:<input type="text" id="cashout_p2s" name="player2secret"><br/>
 
 <button>How bout dah?</button>
 <br/> Result:
