@@ -98,7 +98,7 @@ contract Crypto_RPS
     payoffMatrix["scissors"]["paper"] = 1;
     payoffMatrix["scissors"]["scissors"] = 0;
     publicDuels.push(publicDuel(0x0,0x0,"",0x0,0,0x0,"",0,Results.cancel,0,0));
-  
+
   }
 
   function () {} //no fallback, use the functions to play
@@ -113,30 +113,49 @@ contract Crypto_RPS
   }
   event LogClose(uint256, string, uint256, uint256);
 
-  function close(string owner_hand,
-                string owner_secret,
-                string opponent_hand,
-                string opponent_secret,
-                string memory message1,
-                string memory message2
-                )
+  function announceWinner(
+   string p1h,
+   string p1v,
+   string p1r,
+   string p2s,
+   string p2h,
+   string p2v,
+   string p2r,
+   string p2s) public constant returns (bool,bool)
   {
+            p1addr= ecrecover(p1h, v1, r1, s1);
+            bool p1honest=true;
+            p2addr= ecrecover(p2h, v2, r2, s2);
+            if (p2addr!=opponent) throw;
+            bool p2honest=true;
+            return(p1honest,p2honest);
+  }
+  
+
+function close(string owner_hand,
+  string owner_secret,
+  string opponent_hand,
+  string opponent_secret,
+  string memory message1,
+  string memory message2
+  )
+{
 
 
-        var s = message1.toSlice();
-        var delim = "|".toSlice();
-        
-        nonce_1 = stringToUint(s.split(delim).toString());
-        hand_1 = s.split(delim).toString();
-        player1balance_1 = stringToUint(s.split(delim).toString());
-        player2balance_1 = stringToUint(s.split(delim).toString());
-        
-        var s2 = message2.toSlice();
-        
-        nonce_2 = stringToUint(s2.split(delim).toString());
-        hand_2 = s2.split(delim).toString();
-        player1balance_2 = stringToUint(s2.split(delim).toString());
-        player2balance_2 = stringToUint(s2.split(delim).toString());
+  var s = message1.toSlice();
+  var delim = "|".toSlice();
+
+  nonce_1 = stringToUint(s.split(delim).toString());
+  hand_1 = s.split(delim).toString();
+  player1balance_1 = stringToUint(s.split(delim).toString());
+  player2balance_1 = stringToUint(s.split(delim).toString());
+
+  var s2 = message2.toSlice();
+
+  nonce_2 = stringToUint(s2.split(delim).toString());
+  hand_2 = s2.split(delim).toString();
+  player1balance_2 = stringToUint(s2.split(delim).toString());
+  player2balance_2 = stringToUint(s2.split(delim).toString());
   
   if (nonce_1!=nonce_2) throw;
   if (player2balance_1!=player2balance_2) throw;
@@ -145,21 +164,21 @@ contract Crypto_RPS
   if(!opponent.send(player2balance_1)) throw;
   if(!owner.send(this.balance)) throw;
 
-  }
-  //  event Log(string text, bool called, uint value);
-  //event duels(address p1,uint gambleValue);
-  //  event newPublicGame(bytes32 gameHash, address player_1, uint gambleValue, uint gameIndex);
-  //  event matchedPublicGame(bytes32 gameHash, address player_1, address player_2,  uint gambleValue, uint gameIndex);
-  event solvedPublicGame(address player_1, string hand_1, address player_2, string hand_2, uint gambleValue, Results result, uint gameIndex);    
-  function createPublicGame(bytes32 cryptedH)//, uint blockNumber)
+}
+//  event Log(string text, bool called, uint value);
+//event duels(address p1,uint gambleValue);
+//  event newPublicGame(bytes32 gameHash, address player_1, uint gambleValue, uint gameIndex);
+//  event matchedPublicGame(bytes32 gameHash, address player_1, address player_2,  uint gambleValue, uint gameIndex);
+event solvedPublicGame(address player_1, string hand_1, address player_2, string hand_2, uint gambleValue, Results result, uint gameIndex);    
+function createPublicGame(bytes32 cryptedH)//, uint blockNumber)
+{
+  //hand already used
+  if (publicGameHashToIndex[cryptedH]!=0)
   {
-    //hand already used
-    if (publicGameHashToIndex[cryptedH]!=0)
-      {
-  throw;
-      }
-    /* if (blockNumber<block.number-100 || blockNumber>block.number) */
-    /*   { */
+    throw;
+  }
+  /* if (blockNumber<block.number-100 || blockNumber>block.number) */
+  /*   { */
     /*  throw; */
     /*   } */
     uint gambleValue;
@@ -197,10 +216,10 @@ contract Crypto_RPS
   {
     uint gameIndex=publicGameHashToIndex[gameHash];
     if (publicDuels[gameIndex].result!=Results.commit)
-      {
-  throw;
-      }
-   
+    {
+      throw;
+    }
+
     //    Log("answered",true, msg.value/1 ether);
     publicDuels[gameIndex].player_2=msg.sender;
     publicDuels[gameIndex].hand_2=hand;
@@ -209,7 +228,7 @@ contract Crypto_RPS
     //    matchedPublicGame(gameHash, publicDuels[gameIndex].player_1, msg.sender,  publicDuels[gameIndex].gambleValue, gameIndex);
 
   }
- 
+
 
   function revealRock(bytes32 gameHash, string secret)
   {
@@ -232,143 +251,147 @@ contract Crypto_RPS
     
     cryptedHStored(publicDuels[gameIndex].cryptedHand_1);
     cryptedHStored(sha3(secret, hand));
-      if (publicDuels[gameIndex].result==Results.matched &&
-  publicDuels[gameIndex].player_1==msg.sender &&
-  publicDuels[gameIndex].cryptedHand_1==sha3(secret, hand))//,publicDuels[gameIndex].blockNumber_1))
-      {
-  //  Log("ok revealed",true, msg.value/1 ether);
-  publicDuels[gameIndex].hand_1=hand;
-  solvePublicDuel(gameIndex);
-      }
+    if (publicDuels[gameIndex].result==Results.matched &&
+      publicDuels[gameIndex].player_1==msg.sender &&
+      publicDuels[gameIndex].cryptedHand_1==sha3(secret, hand))//,publicDuels[gameIndex].blockNumber_1))
+    {
+      //  Log("ok revealed",true, msg.value/1 ether);
+      publicDuels[gameIndex].hand_1=hand;
+      solvePublicDuel(gameIndex);
+    }
     else
-      {
-  //  Log("failed",true, msg.value/1 ether);
-  throw;
+    {
+      //  Log("failed",true, msg.value/1 ether);
+      throw;
       }//player has nothing to reveal
-  }
+    }
     
-  //payout
-  function solvePublicDuel(uint gameIndex) private
-  {
-    uint gambleValue=publicDuels[gameIndex].gambleValue;
+    //payout
+    function solvePublicDuel(uint gameIndex) private
+    {
+      uint gambleValue=publicDuels[gameIndex].gambleValue;
+
+      if (payoffMatrix[publicDuels[gameIndex].hand_1][publicDuels[gameIndex].hand_2]==0) //draw
+      {
+        publicDuels[gameIndex].result=Results.draw;
+      }
+      else if (payoffMatrix[publicDuels[gameIndex].hand_1][publicDuels[gameIndex].hand_2]==1) //1 win
+      {
+        publicDuels[gameIndex].result=Results.win1;
+      }
+      else if (payoffMatrix[publicDuels[gameIndex].hand_1][publicDuels[gameIndex].hand_2]==2) //2 wins
+      {
+        publicDuels[gameIndex].result=Results.win2;
+      }
+      solvedPublicGame(msg.sender,  publicDuels[gameIndex].hand_1, publicDuels[gameIndex].player_2, publicDuels[gameIndex].hand_2, publicDuels[gameIndex].gambleValue, publicDuels[gameIndex].result, gameIndex);
+    }
+
+
+
+
     
-    if (payoffMatrix[publicDuels[gameIndex].hand_1][publicDuels[gameIndex].hand_2]==0) //draw
-      {
-  publicDuels[gameIndex].result=Results.draw;
-      }
-    else if (payoffMatrix[publicDuels[gameIndex].hand_1][publicDuels[gameIndex].hand_2]==1) //1 win
-      {
-  publicDuels[gameIndex].result=Results.win1;
-      }
-    else if (payoffMatrix[publicDuels[gameIndex].hand_1][publicDuels[gameIndex].hand_2]==2) //2 wins
-      {
-  publicDuels[gameIndex].result=Results.win2;
-      }
-   solvedPublicGame(msg.sender,  publicDuels[gameIndex].hand_1, publicDuels[gameIndex].player_2, publicDuels[gameIndex].hand_2, publicDuels[gameIndex].gambleValue, publicDuels[gameIndex].result, gameIndex);
-  }
+    function getTotalPublicDuels() constant returns(uint _totalPublicDuels)
+    {
+      return totalPublicDuels;
+    }
 
+    function fromPublicGameHashToIndex(bytes32 gameHash) constant returns(uint gameIndex)
+    {
+      return publicGameHashToIndex[gameHash];
+    }
 
-
-
-    
-  function getTotalPublicDuels() constant returns(uint _totalPublicDuels)
-  {
-    return totalPublicDuels;
-  }
-
-  function fromPublicGameHashToIndex(bytes32 gameHash) constant returns(uint gameIndex)
-  {
-    return publicGameHashToIndex[gameHash];
-  }
-
-  function getPublicDuels(uint gameIndex) constant returns(address p1, bytes32 cryptedHand1, string hand1, uint256 blockNumber_1, uint256 blockNumber_1_reveal, address p2, string hand2, uint256 blockNumber_2, Results result, uint256 gambleValue, uint8 payoutStatus)
-  {
-    p1 = publicDuels[gameIndex].player_1;
-    cryptedHand1 = publicDuels[gameIndex].cryptedHand_1;
-    hand1 = publicDuels[gameIndex].hand_1;
-    blockNumber_1=publicDuels[gameIndex].blockNumber_1;
-    blockNumber_1_reveal=publicDuels[gameIndex].blockNumber_1_reveal;
-    p2 = publicDuels[gameIndex].player_2;
-    hand2 = publicDuels[gameIndex].hand_2;
-    blockNumber_2=publicDuels[gameIndex].blockNumber_2;
-    result=publicDuels[gameIndex].result;
-    gambleValue=publicDuels[gameIndex].gambleValue;
-    payoutStatus=publicDuels[gameIndex].payoutStatus;    
-  }
+    function getPublicDuels(uint gameIndex) constant returns(address p1, bytes32 cryptedHand1, string hand1, uint256 blockNumber_1, uint256 blockNumber_1_reveal, address p2, string hand2, uint256 blockNumber_2, Results result, uint256 gambleValue, uint8 payoutStatus)
+    {
+      p1 = publicDuels[gameIndex].player_1;
+      cryptedHand1 = publicDuels[gameIndex].cryptedHand_1;
+      hand1 = publicDuels[gameIndex].hand_1;
+      blockNumber_1=publicDuels[gameIndex].blockNumber_1;
+      blockNumber_1_reveal=publicDuels[gameIndex].blockNumber_1_reveal;
+      p2 = publicDuels[gameIndex].player_2;
+      hand2 = publicDuels[gameIndex].hand_2;
+      blockNumber_2=publicDuels[gameIndex].blockNumber_2;
+      result=publicDuels[gameIndex].result;
+      gambleValue=publicDuels[gameIndex].gambleValue;
+      payoutStatus=publicDuels[gameIndex].payoutStatus;    
+    }
     function getNonce(bytes message) internal returns (uint64 nonce) {
       // don't care about length of message since nonce is always at a fixed position
       assembly {
-          nonce := mload(add(message, 12))
+        nonce := mload(add(message, 12))
       }
-  }
+    }
 
- function getBlanace() public constant returns (uint256)
- {
+    function getBlanace() public constant returns (uint256)
+    {
      return this.balance;
- }
-  function signatureSplit(bytes signature) private returns (bytes32 r, bytes32 s, uint8 v) {
-      // The signature format is a compact form of:
-      //   {bytes32 r}{bytes32 s}{uint8 v}
-      // Compact means, uint8 is not padded to 32 bytes.
-      assembly {
-          r := mload(add(signature, 32))
-          s := mload(add(signature, 64))
-          // Here we are loading the last 32 bytes, including 31 bytes
-          // of 's'. There is no 'mload8' to do this.
-          //
-          // 'byte' is not working due to the Solidity parser, so lets
-          // use the second best option, 'and'
-          v := and(mload(add(signature, 65)), 1)
-      }
-      // old geth sends a `v` value of [0,1], while the new, in line with the YP sends [27,28]
-      if(v < 27) v += 27;
+   }
+   function signatureSplit(bytes signature) private returns (bytes32 r, bytes32 s, uint8 v) {
+    // The signature format is a compact form of:
+    //   {bytes32 r}{bytes32 s}{uint8 v}
+    // Compact means, uint8 is not padded to 32 bytes.
+    assembly {
+      r := mload(add(signature, 32))
+      s := mload(add(signature, 64))
+      // Here we are loading the last 32 bytes, including 31 bytes
+      // of 's'. There is no 'mload8' to do this.
+      //
+      // 'byte' is not working due to the Solidity parser, so lets
+      // use the second best option, 'and'
+      v := and(mload(add(signature, 65)), 1)
+    }
+    // old geth sends a `v` value of [0,1], while the new, in line with the YP sends [27,28]
+    if(v < 27) v += 27;
   }
 
 
-    function getTransferRawAddress(bytes memory signed_transfer) internal returns (bytes memory, address) {
-        uint signature_start;
-        uint length;
-        bytes memory signature;
-        bytes memory transfer_raw;
-        bytes32 transfer_hash;
-        address transfer_address;
+  function getTransferRawAddress(bytes memory signed_transfer) internal returns (bytes memory, address) {
+    uint signature_start;
+    uint length;
+    bytes memory signature;
+    bytes memory transfer_raw;
+    bytes32 transfer_hash;
+    address transfer_address;
 
-        length = signed_transfer.length;
-        signature_start = length - 65;
-        signature = slice(signed_transfer, signature_start, length);
-        transfer_raw = slice(signed_transfer, 0, signature_start);
+    length = signed_transfer.length;
+    signature_start = length - 65;
+    signature = slice(signed_transfer, signature_start, length);
+    transfer_raw = slice(signed_transfer, 0, signature_start);
 
-        transfer_hash = sha3(transfer_raw);
-        var (r, s, v) = signatureSplit(signature);
-        transfer_address = ecrecover(transfer_hash, v, r, s);
+    transfer_hash = sha3(transfer_raw);
+    var (r, s, v) = signatureSplit(signature);
+    transfer_address = ecrecover(transfer_hash, v, r, s);
 
-        return (transfer_raw, transfer_address);
-    }
-    
+    return (transfer_raw, transfer_address);
+  }
+
   function slice(bytes a, uint start, uint end) private returns (bytes n) {
-          if (a.length < end) {
-              throw;
-          }
-          if (start < 0) {
-              throw;
-          }
-
-          n = new bytes(end - start);
-          for (uint i = start; i < end; i++) { //python style slice
-              n[i - start] = a[i];
-          }
-      }
-       function stringToUint(string s) constant returns (uint result) {
-        bytes memory b = bytes(s);
-        uint i;
-        result = 0;
-        for (i = 0; i < b.length; i++) {
-            uint c = uint(b[i]);
-            if (c >= 48 && c <= 57) {
-                result = result * 10 + (c - 48);
-            }
-        }
+    if (a.length < end) {
+      throw;
     }
+    if (start < 0) {
+      throw;
+    }
+
+    n = new bytes(end - start);
+    for (uint i = start; i < end; i++) { //python style slice
+      n[i - start] = a[i];
+    }
+  }
+  function stringToUint(string s) constant returns (uint result) {
+    bytes memory b = bytes(s);
+    uint i;
+    result = 0;
+    for (i = 0; i < b.length; i++) {
+      uint c = uint(b[i]);
+      if (c >= 48 && c <= 57) {
+        result = result * 10 + (c - 48);
+      }
+    }
+  }
+ function verify( bytes32 hash, uint8 v, bytes32 r, bytes32 s) constant returns(address retAddr) {
+        retAddr= ecrecover(hash, v, r, s);
+    }
+
 
 }
 
