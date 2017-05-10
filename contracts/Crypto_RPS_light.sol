@@ -124,17 +124,56 @@ contract Crypto_RPS
    bytes32 p2h,
    uint8 p2v,
    bytes32 p2r,
-   bytes32 p2s) public constant returns (bool,bool)
+   bytes32 p2s,
+   string p1m,
+   string p2m) public constant returns (uint8 result)
   {
-            p1addr= ecrecover(p1h, p1v, p1r, p1s);
-            if (p1addr!=owner) throw;
-            bool p1honest=true;
-            p2addr= ecrecover(p2h, p2v, p2r, p2s);
-            if (p2addr!=opponent) throw;
-            bool p2honest=true;
-            return(p1honest,p2honest);
+    p1addr= ecrecover(p1h, p1v, p1r, p1s);
+    if (p1addr!=owner) throw;
+    //  bool p1honest=true;
+    p2addr= ecrecover(p2h, p2v, p2r, p2s);
+    if (p2addr!=opponent) throw;
+    //bool p2honest=true;
+    //return(p1honest,p2honest);
+
+    var s = p1m.toSlice();
+    var delim = "|".toSlice();
+
+    nonce_1 = stringToUint(s.split(delim).toString());
+    hand_1 = s.split(delim).toString();
+    player1balance_1 = stringToUint(s.split(delim).toString());
+    player2balance_1 = stringToUint(s.split(delim).toString());
+
+    var s2 = p2m.toSlice();
+
+    nonce_2 = stringToUint(s2.split(delim).toString());
+    hand_2 = s2.split(delim).toString();
+    player1balance_2 = stringToUint(s2.split(delim).toString());
+    player2balance_2 = stringToUint(s2.split(delim).toString());
+
+    if (nonce_1!=nonce_2) throw;
+    if (player2balance_1!=player2balance_2) throw;
+    if (player1balance_1!=player1balance_2) throw;
+
+    //Consensus reached 
+
+    if (payoffMatrix[hand_1][hand_2]==0) //draw
+    {
+     result=9;
+   }
+   else if (payoffMatrix[hand_1][hand_2]==1) //1 win
+   {
+    result=1;
   }
-  
+  else if (payoffMatrix[hand_1][hand_2]==2) //2 wins
+  {
+    result=2;
+  }
+  return(result);
+
+
+}
+
 
 function close(string owner_hand,
   string owner_secret,
@@ -392,9 +431,9 @@ function createPublicGame(bytes32 cryptedH)//, uint blockNumber)
       }
     }
   }
- function verify( bytes32 hash, uint8 v, bytes32 r, bytes32 s) constant returns(address retAddr) {
-        retAddr= ecrecover(hash, v, r, s);
-    }
+  function verify( bytes32 hash, uint8 v, bytes32 r, bytes32 s) constant returns(address retAddr) {
+    retAddr= ecrecover(hash, v, r, s);
+  }
 
 
 }
