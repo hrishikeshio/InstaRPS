@@ -208,161 +208,161 @@ function close(string owner_hand,
   if(!owner.send(this.balance)) throw;
 
 }
-//  event Log(string text, bool called, uint value);
-//event duels(address p1,uint gambleValue);
-//  event newPublicGame(bytes32 gameHash, address player_1, uint gambleValue, uint gameIndex);
-//  event matchedPublicGame(bytes32 gameHash, address player_1, address player_2,  uint gambleValue, uint gameIndex);
-event solvedPublicGame(address player_1, string hand_1, address player_2, string hand_2, uint gambleValue, Results result, uint gameIndex);    
-function createPublicGame(bytes32 cryptedH)//, uint blockNumber)
-{
-  //hand already used
-  if (publicGameHashToIndex[cryptedH]!=0)
-  {
-    throw;
-  }
-  /* if (blockNumber<block.number-100 || blockNumber>block.number) */
-  /*   { */
-    /*  throw; */
-    /*   } */
-    uint gambleValue;
-    //    Log("waiting",true, msg.value/1 ether);
-    //    publicDuels.push(publicDuel(msg.sender,cryptedH,"",blockNumber,0,0x0,"",0,Results.commit,gambleValue,0));
-    publicDuels.push(publicDuel(msg.sender,cryptedH,"",block.number,0,0x0,"",0,Results.commit,gambleValue,0));
-    //    duels(publicDuels[0].player_1,publicDuels[0].gambleValue);
-    //    duels(publicDuels[1].player_1,publicDuels[1].gambleValue);
-    //    duels(publicDuels[totalPublicDuels].player_1,publicDuels[totalPublicDuels].gambleValue);
-    publicGameHashToIndex[cryptedH]=totalPublicDuels;
-    //    newPublicGame(cryptedH, msg.sender, gambleValue, totalPublicDuels);
-    totalPublicDuels++;
-  }
+// //  event Log(string text, bool called, uint value);
+// //event duels(address p1,uint gambleValue);
+// //  event newPublicGame(bytes32 gameHash, address player_1, uint gambleValue, uint gameIndex);
+// //  event matchedPublicGame(bytes32 gameHash, address player_1, address player_2,  uint gambleValue, uint gameIndex);
+// event solvedPublicGame(address player_1, string hand_1, address player_2, string hand_2, uint gambleValue, Results result, uint gameIndex);    
+// function createPublicGame(bytes32 cryptedH)//, uint blockNumber)
+// {
+//   //hand already used
+//   if (publicGameHashToIndex[cryptedH]!=0)
+//   {
+//     throw;
+//   }
+//   /* if (blockNumber<block.number-100 || blockNumber>block.number) */
+//   /*   { */
+//     /*  throw; */
+//     /*   } */
+//     uint gambleValue;
+//     //    Log("waiting",true, msg.value/1 ether);
+//     //    publicDuels.push(publicDuel(msg.sender,cryptedH,"",blockNumber,0,0x0,"",0,Results.commit,gambleValue,0));
+//     publicDuels.push(publicDuel(msg.sender,cryptedH,"",block.number,0,0x0,"",0,Results.commit,gambleValue,0));
+//     //    duels(publicDuels[0].player_1,publicDuels[0].gambleValue);
+//     //    duels(publicDuels[1].player_1,publicDuels[1].gambleValue);
+//     //    duels(publicDuels[totalPublicDuels].player_1,publicDuels[totalPublicDuels].gambleValue);
+//     publicGameHashToIndex[cryptedH]=totalPublicDuels;
+//     //    newPublicGame(cryptedH, msg.sender, gambleValue, totalPublicDuels);
+//     totalPublicDuels++;
+//   }
 
-  function answerPublicRock(bytes32 gameHash)
+//   function answerPublicRock(bytes32 gameHash)
 
-  {
-    //    Log("answered rock",true, msg.value/1 ether);
-    answerPublic(gameHash, "rock");
-  }
+//   {
+//     //    Log("answered rock",true, msg.value/1 ether);
+//     answerPublic(gameHash, "rock");
+//   }
 
-  function answerPublicPaper(bytes32 gameHash)
-  {
-    //    Log("answered paper",true, msg.value/1 ether);
-    answerPublic(gameHash, "paper");
-  }
+//   function answerPublicPaper(bytes32 gameHash)
+//   {
+//     //    Log("answered paper",true, msg.value/1 ether);
+//     answerPublic(gameHash, "paper");
+//   }
 
-  function answerPublicScissors(bytes32 gameHash)
-  {
-    //    Log("answered scissors",true, msg.value/1 ether);
-    answerPublic(gameHash, "scissors");
-  }
+//   function answerPublicScissors(bytes32 gameHash)
+//   {
+//     //    Log("answered scissors",true, msg.value/1 ether);
+//     answerPublic(gameHash, "scissors");
+//   }
 
-  function answerPublic(bytes32 gameHash, string hand) private
-  {
-    uint gameIndex=publicGameHashToIndex[gameHash];
-    if (publicDuels[gameIndex].result!=Results.commit)
-    {
-      throw;
-    }
+//   function answerPublic(bytes32 gameHash, string hand) private
+//   {
+//     uint gameIndex=publicGameHashToIndex[gameHash];
+//     if (publicDuels[gameIndex].result!=Results.commit)
+//     {
+//       throw;
+//     }
 
-    //    Log("answered",true, msg.value/1 ether);
-    publicDuels[gameIndex].player_2=msg.sender;
-    publicDuels[gameIndex].hand_2=hand;
-    publicDuels[gameIndex].blockNumber_2=block.number;
-    publicDuels[gameIndex].result=Results.matched;
-    //    matchedPublicGame(gameHash, publicDuels[gameIndex].player_1, msg.sender,  publicDuels[gameIndex].gambleValue, gameIndex);
+//     //    Log("answered",true, msg.value/1 ether);
+//     publicDuels[gameIndex].player_2=msg.sender;
+//     publicDuels[gameIndex].hand_2=hand;
+//     publicDuels[gameIndex].blockNumber_2=block.number;
+//     publicDuels[gameIndex].result=Results.matched;
+//     //    matchedPublicGame(gameHash, publicDuels[gameIndex].player_1, msg.sender,  publicDuels[gameIndex].gambleValue, gameIndex);
 
-  }
+//   }
 
 
-  function revealRock(bytes32 gameHash, string secret)
-  {
-    reveal(gameHash, secret, "rock");
-  }
-  function revealPaper(bytes32 gameHash, string secret)
-  {
-    reveal(gameHash, secret, "paper");
-  }
-  function revealScissors(bytes32 gameHash, string secret)
-  {
-    reveal(gameHash, secret, "scissors");
-  }
+//   function revealRock(bytes32 gameHash, string secret)
+//   {
+//     reveal(gameHash, secret, "rock");
+//   }
+//   function revealPaper(bytes32 gameHash, string secret)
+//   {
+//     reveal(gameHash, secret, "paper");
+//   }
+//   function revealScissors(bytes32 gameHash, string secret)
+//   {
+//     reveal(gameHash, secret, "scissors");
+//   }
 
-  event cryptedHStored(bytes32 ch);
-  function reveal(bytes32 gameHash, string secret, string hand) private
-  {
-    //    Log("reveal",true, msg.value/1 ether);
-    uint gameIndex=publicGameHashToIndex[gameHash];
+//   event cryptedHStored(bytes32 ch);
+//   function reveal(bytes32 gameHash, string secret, string hand) private
+//   {
+//     //    Log("reveal",true, msg.value/1 ether);
+//     uint gameIndex=publicGameHashToIndex[gameHash];
     
-    cryptedHStored(publicDuels[gameIndex].cryptedHand_1);
-    cryptedHStored(sha3(secret, hand));
-    if (publicDuels[gameIndex].result==Results.matched &&
-      publicDuels[gameIndex].player_1==msg.sender &&
-      publicDuels[gameIndex].cryptedHand_1==sha3(secret, hand))//,publicDuels[gameIndex].blockNumber_1))
-    {
-      //  Log("ok revealed",true, msg.value/1 ether);
-      publicDuels[gameIndex].hand_1=hand;
-      solvePublicDuel(gameIndex);
-    }
-    else
-    {
-      //  Log("failed",true, msg.value/1 ether);
-      throw;
-      }//player has nothing to reveal
-    }
+//     cryptedHStored(publicDuels[gameIndex].cryptedHand_1);
+//     cryptedHStored(sha3(secret, hand));
+//     if (publicDuels[gameIndex].result==Results.matched &&
+//       publicDuels[gameIndex].player_1==msg.sender &&
+//       publicDuels[gameIndex].cryptedHand_1==sha3(secret, hand))//,publicDuels[gameIndex].blockNumber_1))
+//     {
+//       //  Log("ok revealed",true, msg.value/1 ether);
+//       publicDuels[gameIndex].hand_1=hand;
+//       solvePublicDuel(gameIndex);
+//     }
+//     else
+//     {
+//       //  Log("failed",true, msg.value/1 ether);
+//       throw;
+//       }//player has nothing to reveal
+//     }
     
-    //payout
-    function solvePublicDuel(uint gameIndex) private
-    {
-      uint gambleValue=publicDuels[gameIndex].gambleValue;
+//     //payout
+//     function solvePublicDuel(uint gameIndex) private
+//     {
+//       uint gambleValue=publicDuels[gameIndex].gambleValue;
 
-      if (payoffMatrix[publicDuels[gameIndex].hand_1][publicDuels[gameIndex].hand_2]==0) //draw
-      {
-        publicDuels[gameIndex].result=Results.draw;
-      }
-      else if (payoffMatrix[publicDuels[gameIndex].hand_1][publicDuels[gameIndex].hand_2]==1) //1 win
-      {
-        publicDuels[gameIndex].result=Results.win1;
-      }
-      else if (payoffMatrix[publicDuels[gameIndex].hand_1][publicDuels[gameIndex].hand_2]==2) //2 wins
-      {
-        publicDuels[gameIndex].result=Results.win2;
-      }
-      solvedPublicGame(msg.sender,  publicDuels[gameIndex].hand_1, publicDuels[gameIndex].player_2, publicDuels[gameIndex].hand_2, publicDuels[gameIndex].gambleValue, publicDuels[gameIndex].result, gameIndex);
-    }
+//       if (payoffMatrix[publicDuels[gameIndex].hand_1][publicDuels[gameIndex].hand_2]==0) //draw
+//       {
+//         publicDuels[gameIndex].result=Results.draw;
+//       }
+//       else if (payoffMatrix[publicDuels[gameIndex].hand_1][publicDuels[gameIndex].hand_2]==1) //1 win
+//       {
+//         publicDuels[gameIndex].result=Results.win1;
+//       }
+//       else if (payoffMatrix[publicDuels[gameIndex].hand_1][publicDuels[gameIndex].hand_2]==2) //2 wins
+//       {
+//         publicDuels[gameIndex].result=Results.win2;
+//       }
+//       solvedPublicGame(msg.sender,  publicDuels[gameIndex].hand_1, publicDuels[gameIndex].player_2, publicDuels[gameIndex].hand_2, publicDuels[gameIndex].gambleValue, publicDuels[gameIndex].result, gameIndex);
+//     }
 
 
 
 
     
-    function getTotalPublicDuels() constant returns(uint _totalPublicDuels)
-    {
-      return totalPublicDuels;
-    }
+//     function getTotalPublicDuels() constant returns(uint _totalPublicDuels)
+//     {
+//       return totalPublicDuels;
+//     }
 
-    function fromPublicGameHashToIndex(bytes32 gameHash) constant returns(uint gameIndex)
-    {
-      return publicGameHashToIndex[gameHash];
-    }
+//     function fromPublicGameHashToIndex(bytes32 gameHash) constant returns(uint gameIndex)
+//     {
+//       return publicGameHashToIndex[gameHash];
+//     }
 
-    function getPublicDuels(uint gameIndex) constant returns(address p1, bytes32 cryptedHand1, string hand1, uint256 blockNumber_1, uint256 blockNumber_1_reveal, address p2, string hand2, uint256 blockNumber_2, Results result, uint256 gambleValue, uint8 payoutStatus)
-    {
-      p1 = publicDuels[gameIndex].player_1;
-      cryptedHand1 = publicDuels[gameIndex].cryptedHand_1;
-      hand1 = publicDuels[gameIndex].hand_1;
-      blockNumber_1=publicDuels[gameIndex].blockNumber_1;
-      blockNumber_1_reveal=publicDuels[gameIndex].blockNumber_1_reveal;
-      p2 = publicDuels[gameIndex].player_2;
-      hand2 = publicDuels[gameIndex].hand_2;
-      blockNumber_2=publicDuels[gameIndex].blockNumber_2;
-      result=publicDuels[gameIndex].result;
-      gambleValue=publicDuels[gameIndex].gambleValue;
-      payoutStatus=publicDuels[gameIndex].payoutStatus;    
-    }
-    function getNonce(bytes message) internal returns (uint64 nonce) {
-      // don't care about length of message since nonce is always at a fixed position
-      assembly {
-        nonce := mload(add(message, 12))
-      }
-    }
+//     function getPublicDuels(uint gameIndex) constant returns(address p1, bytes32 cryptedHand1, string hand1, uint256 blockNumber_1, uint256 blockNumber_1_reveal, address p2, string hand2, uint256 blockNumber_2, Results result, uint256 gambleValue, uint8 payoutStatus)
+//     {
+//       p1 = publicDuels[gameIndex].player_1;
+//       cryptedHand1 = publicDuels[gameIndex].cryptedHand_1;
+//       hand1 = publicDuels[gameIndex].hand_1;
+//       blockNumber_1=publicDuels[gameIndex].blockNumber_1;
+//       blockNumber_1_reveal=publicDuels[gameIndex].blockNumber_1_reveal;
+//       p2 = publicDuels[gameIndex].player_2;
+//       hand2 = publicDuels[gameIndex].hand_2;
+//       blockNumber_2=publicDuels[gameIndex].blockNumber_2;
+//       result=publicDuels[gameIndex].result;
+//       gambleValue=publicDuels[gameIndex].gambleValue;
+//       payoutStatus=publicDuels[gameIndex].payoutStatus;    
+//     }
+//     function getNonce(bytes message) internal returns (uint64 nonce) {
+//       // don't care about length of message since nonce is always at a fixed position
+//       assembly {
+//         nonce := mload(add(message, 12))
+//       }
+//     }
 
     function getBlanace() public constant returns (uint256)
     {
