@@ -46,6 +46,9 @@ contract Crypto_RPS
   uint256 player1balance_2;
   uint256 player2balance_1;
   uint256 player2balance_2;
+  address p1addr;
+  address p2addr;
+  
   
   modifier onlyOwner() {
     if (msg.sender!=owner) throw;
@@ -114,18 +117,19 @@ contract Crypto_RPS
   event LogClose(uint256, string, uint256, uint256);
 
   function announceWinner(
-   string p1h,
-   string p1v,
-   string p1r,
-   string p2s,
-   string p2h,
-   string p2v,
-   string p2r,
-   string p2s) public constant returns (bool,bool)
+   bytes32 p1h,
+   uint8 p1v,
+   bytes32 p1r,
+   bytes32 p1s,
+   bytes32 p2h,
+   uint8 p2v,
+   bytes32 p2r,
+   bytes32 p2s) public constant returns (bool,bool)
   {
-            p1addr= ecrecover(p1h, v1, r1, s1);
+            p1addr= ecrecover(p1h, p1v, p1r, p1s);
+            if (p1addr!=owner) throw;
             bool p1honest=true;
-            p2addr= ecrecover(p2h, v2, r2, s2);
+            p2addr= ecrecover(p2h, p2v, p2r, p2s);
             if (p2addr!=opponent) throw;
             bool p2honest=true;
             return(p1honest,p2honest);

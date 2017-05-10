@@ -6,6 +6,7 @@
   crossorigin="anonymous"></script>
   <script src="js/web3.min.js"></script>
   <script src="js/ethjs-util.min.js"></script>
+  <script src="js/bignumber.min.js"></script>
   <!-- <script src="js/insta.js"></script> -->
   <script src="js/index.js"></script>
 </head>
@@ -42,11 +43,13 @@ Result:
 <div id='#play_result'></div>
 <h2> Who won? you decide! </h2>
 Player1 message:<input type="text" id="compute_p1m" name="player1msg"><br/>
-Player1 signature:<input type="text" id="compute_p1h" name="player1Hash"><br/>
-Player1 secret:<input type="text" id="compute_p1s"  name="player1secret"><br/>
+Player1 hash:<input type="text" id="compute_p1h" name="player1Hash"><br/>
+Player1 signature:<input type="text" id="compute_p1s"  name="player1sign"><br/>
+<!-- Player1 secret:<input type="text" id="compute_p1s"  name="player1secret"><br/> -->
 Player2 message:<input type="text"  id="compute_p2m" name="player2msg"><br/>
-Player2 signature:<input type="text"  id="compute_p2h" name="player2Hash"><br/>
-Player2 secret:<input type="text"  id="compute_p2s" name="player2secret"><br/>
+Player2 hash:<input type="text"  id="compute_p2h" name="player2Hash"><br/>
+Player2 signature:<input type="text"  id="compute_p2s" name="player2sign"><br/>
+<!-- Player2 secret:<input type="text"  id="compute_p2s" name="player2secret"><br/> -->
 <br/>
 <button id ="btn_winner">Compute</button>
 
