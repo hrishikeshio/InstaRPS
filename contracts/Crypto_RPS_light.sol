@@ -137,20 +137,10 @@ contract Crypto_RPS
     //bool p2honest=true;
     //return(p1honest,p2honest);
 
-    var s = p1m.toSlice();
-    var delim = "|".toSlice();
+    (nonce_1, hand_1, player1balance_1, player2balance_1) = decodeMessage(p1m);
 
-    nonce_1 = stringToUint(s.split(delim).toString());
-    hand_1 = s.split(delim).toString();
-    player1balance_1 = stringToUint(s.split(delim).toString());
-    player2balance_1 = stringToUint(s.split(delim).toString());
 
-    var s2 = p2m.toSlice();
-
-    nonce_2 = stringToUint(s2.split(delim).toString());
-    hand_2 = s2.split(delim).toString();
-    player1balance_2 = stringToUint(s2.split(delim).toString());
-    player2balance_2 = stringToUint(s2.split(delim).toString());
+    (nonce_2, hand_2, player1balance_2, player2balance_2) = decodeMessage(p2m);
 
     if (nonce_1!=nonce_2) throw;
     if (player2balance_1!=player2balance_2) throw;
@@ -175,6 +165,16 @@ contract Crypto_RPS
 
 }
 
+function decodeMessage(string message) public constant returns (uint256 _nonce, string _hand, uint256 _player1balance, uint256 _player2balance)
+{
+    var s = message.toSlice();
+    var delim = "|".toSlice();
+
+    _nonce = stringToUint(s.split(delim).toString());
+    _hand = s.split(delim).toString();
+    _player1balance = stringToUint(s.split(delim).toString());
+    _player2balance = stringToUint(s.split(delim).toString());
+}
 
 function close(bytes32 p1h,
    uint8 p1v,
@@ -188,10 +188,10 @@ function close(bytes32 p1h,
    string p2m)
 {
 
-  var (winner, p1b, p2b) = announceWinner(p1h, p1v, p1r, p1s, p2h, p2v, p2r, p1m, p2m)
-
+  var (winner, p1b, p2b) = announceWinner(p1h, p1v, p1r, p1s, p2h, p2v, p2r, p2s, p1m, p2m);
+  
   if(!opponent.send(p2b)) throw;
-  if(!owner.send(p1b)) throw;
+  if(!owner.send(this.balance)) throw;
 
 }
 // //  event Log(string text, bool called, uint value);
